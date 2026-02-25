@@ -1,0 +1,131 @@
+:root {
+    --surface: #ffffff;
+    --text-main: #22303a;
+    --accent: #b65a68;
+    --accent-hover: #9f4d59;
+    --alert-bg: #fef2f2;
+    --alert-text: #b42318;
+    --ring: rgba(141, 58, 70, 0.22);
+    --radius-xl: 18px;
+    --radius-md: 10px;
+    --shadow-xl: 0 14px 40px rgba(24, 39, 58, 0.12);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: "Space Grotesk", "Segoe UI", sans-serif;
+    color: var(--text-main);
+    background: linear-gradient(180deg, #f7fafc 0%, #eef3f6 100%);
+}
+
+.auth-page {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+}
+
+.login-shell {
+    width: min(460px, 100%);
+    background: var(--surface);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+}
+
+.login-card {
+    padding: 38px 34px;
+    text-align: center;
+}
+
+.login-card h2 {
+    margin: 0 0 22px;
+    font-size: 1.7rem;
+    font-weight: 700;
+}
+
+.alert-error {
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    background: var(--alert-bg);
+    color: var(--alert-text);
+    font-size: 0.92rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.92rem;
+    font-weight: 500;
+    text-align: center;
+}
+
+input {
+    width: 100%;
+    border: 1px solid #d0dae2;
+    background: #ffffff;
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    font: inherit;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px var(--ring);
+}
+
+.remember-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin: 4px 0 15px;
+}
+
+.remember-row input {
+    width: auto;
+    margin: 0;
+}
+
+.remember-row label {
+    margin: 0;
+    cursor: pointer;
+}
+
+button {
+    width: 100%;
+    border: 0;
+    border-radius: var(--radius-md);
+    padding: 13px 14px;
+    margin-top: 6px;
+    background: var(--accent);
+    color: #ffffff;
+    font: inherit;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+@media (max-width: 900px) {
+    .login-shell {
+        width: min(460px, 100%);
+    }
+}
