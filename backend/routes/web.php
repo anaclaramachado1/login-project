@@ -11,19 +11,42 @@ use Illuminate\Support\Str;
 
 Route::get('/', function () {
     if (Auth::check()) {
-        return redirect('/dashboard');
+        $ambiente = session('ambiente');
+
+        if ($ambiente === 'vendas') {
+            return redirect('/dashboard');
+        }
+
+        if ($ambiente === 'cronogramas') {
+            return redirect('/cronogramas');
+        }
+
+        return redirect('/selecionar-ambiente');
     }
 
     return redirect('/login');
 });
 
 Route::get('/dashboard', function () {
+    return view('dashboard', [
+        'user' => Auth::user(),
+    ]);
+})->middleware('ambiente:vendas');
+
+Route::get('/cronogramas', function () {
+    return view('cronogramas', [
+        'user' => Auth::user(),
+    ]);
+})->middleware('ambiente:cronogramas');
+
+Route::get('/selecionar-ambiente', function () {
     if (! Auth::check()) {
         return redirect('/login');
     }
 
-    return view('dashboard', [
+    return view('selecionar-ambiente', [
         'user' => Auth::user(),
+        'ambienteAtual' => session('ambiente'),
     ]);
 });
 
@@ -34,17 +57,32 @@ Route::get('/login', function () {
 Route::post('/login', function (Request $request) {
     if (Auth::attempt($request->only('email', 'password'), $request->filled('remember'))) {
         $request->session()->regenerate();
+        $request->session()->forget('ambiente');
 
-        return redirect('/dashboard');
+        return redirect('/selecionar-ambiente');
     }
 
     return back()->with('error', 'Usuario ou senha invalido');
 });
 
-Route::post('/logout', function () {
+Route::post('/selecionar-ambiente', function (Request $request) {
+    if (! Auth::check()) {
+        return redirect('/login');
+    }
+
+    $data = $request->validate([
+        'ambiente' => ['required', 'in:vendas,cronogramas'],
+    ]);
+
+    $request->session()->put('ambiente', $data['ambiente']);
+
+    return redirect($data['ambiente'] === 'vendas' ? '/dashboard' : '/cronogramas');
+});
+
+Route::post('/logout', function (Request $request) {
     Auth::logout();
-    request()->session()->invalidate();
-    request()->session()->regenerateToken();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
 
     return redirect('/login');
 });
@@ -217,10 +255,12 @@ Route::prefix('api')->group(function () {
         }
 
         $request->session()->regenerate();
+        $request->session()->forget('ambiente');
 
         return response()->json([
             'message' => 'Login realizado com sucesso.',
             'user' => Auth::user(),
+            'ambiente' => null,
         ]);
     });
 
@@ -233,6 +273,38 @@ Route::prefix('api')->group(function () {
 
         return response()->json([
             'user' => Auth::user(),
+            'ambiente' => session('ambiente'),
+        ]);
+    });
+
+    Route::get('/ambiente', function () {
+        if (! Auth::check()) {
+            return response()->json([
+                'message' => 'Nao autenticado.',
+            ], 401);
+        }
+
+        return response()->json([
+            'ambiente' => session('ambiente'),
+        ]);
+    });
+
+    Route::post('/ambiente', function (Request $request) {
+        if (! Auth::check()) {
+            return response()->json([
+                'message' => 'Nao autenticado.',
+            ], 401);
+        }
+
+        $data = $request->validate([
+            'ambiente' => ['required', 'in:vendas,cronogramas'],
+        ]);
+
+        $request->session()->put('ambiente', $data['ambiente']);
+
+        return response()->json([
+            'message' => 'Ambiente selecionado com sucesso.',
+            'ambiente' => $data['ambiente'],
         ]);
     });
 
@@ -247,6 +319,13 @@ Route::prefix('api')->group(function () {
         ]);
     });
 
+    Route::middleware('ambiente:vendas')->group(function () use (
+        $ensureClientesFornecedoresTable,
+        $ensureCotacoesTables,
+        $ensureItensTable,
+        $ensureUnidadesMedidaTable,
+        $itemEstaEmUso
+    ) {
     Route::get('/clientes-fornecedores', function () use ($ensureClientesFornecedoresTable) {
         if (! Auth::check()) {
             return response()->json([
@@ -1047,5 +1126,6 @@ Route::prefix('api')->group(function () {
         return response()->json([
             'message' => 'Unidade de medida excluida com sucesso.',
         ]);
+    });
     });
 });

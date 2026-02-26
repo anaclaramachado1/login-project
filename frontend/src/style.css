@@ -45,6 +45,50 @@ body {
     cursor: not-allowed;
 }
 
+.ambiente-container {
+    width: 100%;
+    max-width: 520px;
+    margin: 100px auto;
+    padding: 24px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.ambiente-subtitle {
+    margin-top: -4px;
+    color: #475569;
+}
+
+.ambiente-options {
+    display: grid;
+    gap: 10px;
+}
+
+.ambiente-options button {
+    text-align: left;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 12px;
+    background: #f8fafc;
+    cursor: pointer;
+}
+
+.ambiente-options button strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.ambiente-options button span {
+    color: #64748b;
+    font-size: 14px;
+}
+
+.ambiente-options button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
 .status {
     margin-bottom: 12px;
     padding: 10px;
@@ -134,6 +178,14 @@ body {
     background: #b91c1c;
 }
 
+.menu-button.switch {
+    background: #0ea5e9;
+}
+
+.menu-button.switch:hover {
+    background: #0284c7;
+}
+
 .submenu {
     position: sticky;
     top: 56px;
@@ -167,6 +219,10 @@ body {
     padding: 0 16px 24px;
 }
 
+.cronograma-content {
+    max-width: 1400px;
+}
+
 .content-card {
     background: #fff;
     border-radius: 10px;
@@ -177,4 +233,132 @@ body {
 
 .content-card h3 {
     margin-top: 0;
+}
+
+.cronograma-layout {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 14px;
+}
+
+.cronograma-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.cronograma-table-wrap {
+    overflow: auto;
+}
+
+.cronograma-table {
+    width: 100%;
+    min-width: 950px;
+    border-collapse: collapse;
+}
+
+.cronograma-table th {
+    background: #f1f5f9;
+    text-align: left;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+    padding: 8px;
+}
+
+.cronograma-table td {
+    border: 1px solid #e2e8f0;
+    padding: 4px;
+    background: #fff;
+}
+
+.cronograma-table td input {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 13px;
+    padding: 6px 8px;
+    box-sizing: border-box;
+}
+
+.duracao-cell {
+    min-width: 56px;
+    text-align: center;
+    color: #0f172a;
+    font-weight: 600;
+}
+
+.table-action {
+    border: 1px solid #cbd5e1;
+    background: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+}
+
+.table-action:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.cronograma-chart-card {
+    min-height: 420px;
+}
+
+.timeline-list {
+    display: grid;
+    gap: 8px;
+}
+
+.timeline-row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    align-items: center;
+    gap: 8px;
+}
+
+.timeline-label {
+    font-size: 13px;
+    color: #334155;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.timeline-track {
+    position: relative;
+    min-height: 26px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background:
+        repeating-linear-gradient(
+            90deg,
+            #f8fafc 0,
+            #f8fafc 21px,
+            #eef2f7 21px,
+            #eef2f7 22px
+        );
+}
+
+.timeline-bar {
+    height: 18px;
+    margin-top: 3px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #0ea5e9, #0369a1);
+}
+
+@media (max-width: 1100px) {
+    .cronograma-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 800px) {
+    .timeline-row {
+        grid-template-columns: 1fr;
+    }
 }

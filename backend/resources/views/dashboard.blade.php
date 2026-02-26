@@ -16,6 +16,9 @@
             <div class="topbar">
                 <div class="topbar-actions">
                     <div class="nav-buttons">
+                        <form method="GET" action="/selecionar-ambiente">
+                            <button type="submit" class="cadastro-btn">Trocar Ambiente</button>
+                        </form>
                         <div class="cadastro-dropdown">
                             <button type="button" id="cadastro-toggle" class="cadastro-btn">Cadastro</button>
                             <div id="cadastro-menu" class="cadastro-menu is-hidden">
