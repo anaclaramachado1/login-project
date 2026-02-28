@@ -58,8 +58,18 @@
 
             <div class="planner-shell">
                 <section class="sheet-panel">
-                    <div class="sheet-scroll" id="sheet-scroll">
-                        <table class="sheet-table">
+                    <div class="sheet-head">
+                        <table class="sheet-table sheet-head-table">
+                            <colgroup class="sheet-colgroup">
+                                <col class="sheet-col-actions">
+                                <col class="sheet-col-task">
+                                <col class="sheet-col-subtask">
+                                <col class="sheet-col-duration">
+                                <col class="sheet-col-start">
+                                <col class="sheet-col-end">
+                                <col class="sheet-col-interval">
+                                <col class="sheet-col-delete">
+                            </colgroup>
                             <thead>
                                 <tr>
                                     <th></th>
@@ -72,6 +82,20 @@
                                     <th></th>
                                 </tr>
                             </thead>
+                        </table>
+                    </div>
+                    <div class="sheet-scroll" id="sheet-scroll">
+                        <table class="sheet-table sheet-body-table">
+                            <colgroup class="sheet-colgroup">
+                                <col class="sheet-col-actions">
+                                <col class="sheet-col-task">
+                                <col class="sheet-col-subtask">
+                                <col class="sheet-col-duration">
+                                <col class="sheet-col-start">
+                                <col class="sheet-col-end">
+                                <col class="sheet-col-interval">
+                                <col class="sheet-col-delete">
+                            </colgroup>
                             <tbody id="task-table-body"></tbody>
                         </table>
                     </div>
@@ -101,7 +125,18 @@
                     <input type="text" id="cadastro-active-input" placeholder="Nova etapa" required>
                     <button type="submit">Adicionar</button>
                 </form>
-                <ul id="cadastro-active-list" class="cadastro-list"></ul>
+                <input type="search" id="cadastro-search-input" class="cadastro-search" placeholder="Pesquisar">
+                <div class="cadastro-table-wrap">
+                    <table class="cadastro-table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Acoes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cadastro-active-list"></tbody>
+                    </table>
+                </div>
             </article>
         </section>
     </div>
@@ -151,11 +186,83 @@
         const cadastroLabels = { etapas: 'Etapas', setores: 'Setores', tarefas: 'Tarefas', subtarefas: 'Subtarefas' };
         const cadastroPlaceholders = { etapas: 'Nova etapa', setores: 'Novo setor', tarefas: 'Nova tarefa', subtarefas: 'Nova subtarefa' };
 
+        const seededTarefas = [
+            'Acessorio de produ\u00e7\u00e3o/ montagem',
+            'Acessorio produ\u00e7\u00e3o',
+            'Aviso de obra contratada',
+            'Bloco',
+            'Cargas na Funda\u00e7\u00e3o',
+            'Coc oficial',
+            'Comparativo de volume',
+            'Comparativo volume',
+            'Concreto funda\u00e7\u00e3o',
+            'Contrato',
+            'Corte e dobra',
+            'Cumeeiras met\u00e1licas',
+            'Estaqueamento',
+            'Estrutura de concreto',
+            'Fabrica\u00e7\u00e3o',
+            'Guindaste',
+            'Info Premovale',
+            'Insertos met\u00e1lico (se houver)',
+            'Loca\u00e7\u00e3o',
+            'M\u00e3o de obra de montagem',
+            'M\u00e3o de obra estaqueamento',
+            'M\u00e3o de obra funda\u00e7\u00e3o',
+            'M\u00e3o de obra met\u00e1lica',
+            'M\u00e3o de obra topografia',
+            'Planilha de pega',
+            'Plano de Rigging',
+            'Plataforma',
+            'Projeto de capeamento de laje',
+            'Projeto de Cobertura met\u00e1lica',
+            'Projeto de Funda\u00e7\u00e3o Profunda',
+            'Projeto de Funda\u00e7\u00e3o Rasa',
+            'Projeto de produ\u00e7\u00e3o',
+            'Projeto de solidariza\u00e7\u00e3o de estrutura',
+            'Projeto executivo',
+            'Projeto Lajes para Produ\u00e7\u00e3o',
+            'Proposta consolidada',
+            'Quantitativo material',
+            'Rufo',
+            'Telha met\u00e1lica',
+            'Telhas e calhas',
+            'Volume final',
+        ];
+        const seededSubtarefas = [
+            'Acabamento',
+            'Ajuste',
+            'Analise',
+            'Aprova\u00e7\u00e3o',
+            'Assinatura',
+            'Compra',
+            'Contrato',
+            'Cota\u00e7\u00e3o',
+            'Elabora\u00e7\u00e3o',
+            'Envio',
+            'Execu\u00e7\u00e3o',
+            'Fabrica\u00e7\u00e3o',
+            'Fornecimento',
+            'Impermeabiliza\u00e7\u00e3o',
+            'Instala\u00e7\u00e3o',
+            'Libera\u00e7\u00e3o de fabrica\u00e7\u00e3o',
+            'Loca\u00e7\u00e3o',
+            'Montagem',
+            'Programa\u00e7\u00e3o',
+            'Rela\u00e7\u00e3o de funcionarios',
+            'Relat\u00f3rio',
+            'Relat\u00f3rio de devolu\u00e7\u00e3o',
+            'Relat\u00f3rio de recebimento',
+            'Separa\u00e7\u00e3o',
+            'Solicita\u00e7\u00e3o de compra',
+            'Volumes e Valores',
+        ];
+
         const defaultCatalogs = {
             etapas: ['Unica'],
             setores: ['Comercial', 'Engenharia'],
-            tarefas: ['Proposta consolidada', 'Aviso de obra contratada', 'Projeto executivo'],
-            subtarefas: ['Envio', 'Assinatura', 'Elaboracao'],
+            tarefas: seededTarefas,
+            subtarefas: seededSubtarefas,
         };
 
         const addTaskBtn = document.getElementById('add-task-btn');
@@ -174,6 +281,7 @@
         const cadastroActiveTitle = document.getElementById('cadastro-active-title');
         const cadastroActiveForm = document.getElementById('cadastro-active-form');
         const cadastroActiveInput = document.getElementById('cadastro-active-input');
+        const cadastroSearchInput = document.getElementById('cadastro-search-input');
         const cadastroActiveList = document.getElementById('cadastro-active-list');
         const tableBody = document.getElementById('task-table-body');
         const timelineHeader = document.getElementById('timeline-header');
@@ -189,12 +297,15 @@
         let activeCadastroType = 'etapas';
         let activeScale = 'dias';
         let editingRowId = null;
+        let editingCatalogValue = null;
+        let cadastroSearchTerm = '';
         let linkSourceTaskId = null;
         let reorderTaskId = null;
         let hoveredSourceCell = null;
 
         const pad = (n) => String(n).padStart(2, '0');
         const normalizeCatalogValue = (v) => String(v || '').trim();
+        const toCatalogCompareKey = (v) => normalizeCatalogValue(v).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
         const sortAlpha = (list) => [...(list || [])].sort((a, b) => String(a || '').localeCompare(String(b || ''), 'pt-BR', { sensitivity: 'base' }));
         const addDays = (date, amount) => { const d = new Date(date); d.setDate(d.getDate() + amount); return d; };
         const endOfMonth = (date) => new Date(date.getFullYear(), date.getMonth() + 1, 0);
@@ -215,9 +326,19 @@
 
         const ensureCatalogValue = (type, value) => {
             const normalized = normalizeCatalogValue(value);
-            if (!normalized) return;
+            if (!normalized) return false;
             if (!catalogs[type]) catalogs[type] = [];
-            if (!catalogs[type].includes(normalized)) catalogs[type].push(normalized);
+            const compareKey = toCatalogCompareKey(normalized);
+            const exists = catalogs[type].some((item) => toCatalogCompareKey(item) === compareKey);
+            if (exists) return false;
+            catalogs[type].push(normalized);
+            return true;
+        };
+        const ensureSeedCatalogs = () => {
+            let changed = false;
+            seededTarefas.forEach((item) => { if (ensureCatalogValue('tarefas', item)) changed = true; });
+            seededSubtarefas.forEach((item) => { if (ensureCatalogValue('subtarefas', item)) changed = true; });
+            return changed;
         };
 
         const normalizeTaskDates = (task) => {
@@ -383,7 +504,7 @@
             return rows;
         };
 
-        const getScaleConfig = () => activeScale === 'semanas' ? { pxPerDay: 20 } : activeScale === 'meses' ? { pxPerDay: 4 } : { pxPerDay: 24 };
+        const getScaleConfig = () => activeScale === 'semanas' ? { pxPerDay: 24 } : activeScale === 'meses' ? { pxPerDay: 8 } : { pxPerDay: 30 };
         const getTimelineRange = () => {
             const validDates = tasks.flatMap((task) => [parseDateInput(task.inicio), parseDateInput(task.fim)]).filter((d) => !Number.isNaN(d.getTime()));
             if (!validDates.length) { const min = addDays(today, -2); return { minDate: min, maxDate: addDays(min, MIN_DAYS - 1) }; }
@@ -422,11 +543,7 @@
             let cursor = new Date(start);
             while (cursor <= end) {
                 const isWeekend = cursor.getDay() === 0 || cursor.getDay() === 6;
-                const isFirstVisibleDay = cursor.getTime() === start.getTime();
-                const isFirstDayOfMonth = cursor.getDate() === 1;
-                const label = (isFirstVisibleDay || isFirstDayOfMonth)
-                    ? `${pad(cursor.getDate())}/${pad(cursor.getMonth() + 1)}`
-                    : `${pad(cursor.getDate())}`;
+                const label = `${pad(cursor.getDate())}/${pad(cursor.getMonth() + 1)}`;
                 segments.push({ width: pxPerDay, label, className: isWeekend ? 'is-weekend' : '' });
                 cursor = addDays(cursor, 1);
             }
@@ -437,23 +554,80 @@
             const current = selected || select.value || '';
             select.innerHTML = sortAlpha(options || []).map((item) => `<option value="${escapeAttr(item)}" ${item === current ? 'selected' : ''}>${item}</option>`).join('');
         };
+        const getTaskFieldByCatalogType = (type) => type === 'etapas' ? 'etapa' : type === 'setores' ? 'setor' : type === 'tarefas' ? 'tarefa' : type === 'subtarefas' ? 'subtarefa' : '';
+        const isCatalogValueInUse = (type, value) => {
+            const field = getTaskFieldByCatalogType(type);
+            if (!field) return false;
+            const compareKey = toCatalogCompareKey(value);
+            return tasks.some((task) => toCatalogCompareKey(task[field]) === compareKey);
+        };
+        const replaceTaskCatalogValue = (type, fromValue, toValue) => {
+            const field = getTaskFieldByCatalogType(type);
+            if (!field) return;
+            const fromKey = toCatalogCompareKey(fromValue);
+            tasks.forEach((task) => {
+                if (toCatalogCompareKey(task[field]) === fromKey) task[field] = toValue;
+            });
+        };
+        const removeCatalogValue = (type, value) => {
+            if (!type || !value || !catalogs[type]) return false;
+            if (isCatalogValueInUse(type, value)) return false;
+            if ((catalogs[type] || []).length <= 1) return false;
+            const targetKey = toCatalogCompareKey(value);
+            const currentList = catalogs[type] || [];
+            const filtered = currentList.filter((item) => toCatalogCompareKey(item) !== targetKey);
+            if (filtered.length === currentList.length || !filtered.length) return false;
+            catalogs[type] = filtered;
+            return true;
+        };
+        const renameCatalogValue = (type, oldValue, newValueRaw) => {
+            const list = catalogs[type] || [];
+            const oldKey = toCatalogCompareKey(oldValue);
+            const index = list.findIndex((item) => toCatalogCompareKey(item) === oldKey);
+            if (index < 0) return false;
+            const newValue = normalizeCatalogValue(newValueRaw);
+            if (!newValue) return false;
+            const newKey = toCatalogCompareKey(newValue);
+            const duplicate = list.find((item, itemIndex) => itemIndex !== index && toCatalogCompareKey(item) === newKey);
+            if (duplicate) {
+                list.splice(index, 1);
+                replaceTaskCatalogValue(type, oldValue, duplicate);
+                return true;
+            }
+            list[index] = newValue;
+            replaceTaskCatalogValue(type, oldValue, newValue);
+            return true;
+        };
 
         const renderCadastrosPanel = () => {
             cadastroActiveTitle.textContent = cadastroLabels[activeCadastroType] || 'Cadastro';
             cadastroActiveInput.placeholder = cadastroPlaceholders[activeCadastroType] || 'Novo item';
-            const items = sortAlpha(catalogs[activeCadastroType] || []);
-            cadastroActiveList.innerHTML = items.map((item) => `<li><span>${item}</span><div class="cadastro-item-actions"><button type="button" data-action="remove-catalog-item" data-catalog-type="${activeCadastroType}" data-catalog-value="${escapeAttr(item)}" title="Excluir">x</button></div></li>`).join('');
+            cadastroSearchInput.value = cadastroSearchTerm;
+            const sourceItems = sortAlpha(catalogs[activeCadastroType] || []);
+            const searchKey = toCatalogCompareKey(cadastroSearchTerm);
+            const items = searchKey ? sourceItems.filter((item) => toCatalogCompareKey(item).includes(searchKey)) : sourceItems;
+            cadastroActiveList.innerHTML = items.length
+                ? items.map((item) => {
+                    const itemEscaped = escapeAttr(item);
+                    const isEditing = editingCatalogValue !== null && toCatalogCompareKey(editingCatalogValue) === toCatalogCompareKey(item);
+                    const isInUse = isCatalogValueInUse(activeCadastroType, item);
+                    if (isEditing) {
+                        return `<tr><td><input type="text" data-edit-input="catalog-item" value="${itemEscaped}" maxlength="120"></td><td><div class="cadastro-item-actions"><button type="button" data-action="save-edit-catalog-item" data-catalog-type="${activeCadastroType}" data-catalog-value="${itemEscaped}">Salvar</button><button type="button" data-action="cancel-edit-catalog-item">Cancelar</button></div></td></tr>`;
+                    }
+                    return `<tr><td>${itemEscaped}</td><td><div class="cadastro-item-actions"><button type="button" class="edit-row-btn" data-action="start-edit-catalog-item" data-catalog-value="${itemEscaped}" title="Editar">&#9998;</button><button type="button" class="delete-btn" data-action="remove-catalog-item" data-catalog-type="${activeCadastroType}" data-catalog-value="${itemEscaped}" title="${isInUse ? 'Item em uso. Nao pode excluir.' : 'Excluir'}" ${isInUse ? 'disabled' : ''}>x</button></div></td></tr>`;
+                }).join('')
+                : '<tr class="cadastro-empty-row"><td colspan="2">Nenhum item encontrado.</td></tr>';
         };
 
         const renderTable = (rows) => {
             tableBody.innerHTML = rows.map((row) => {
                 if (row.type === 'etapa') {
                     const isCollapsed = collapsedEtapas.has(row.etapa);
-                    return `<tr class="group-row etapa-row"><td colspan="8"><div class="group-row-content"><div class="group-title-area"><button type="button" class="group-toggle" data-action="toggle-group" data-group-type="etapa" data-group-key="${encodeURIComponent(row.etapa)}"><span class="group-icon">${isCollapsed ? '+' : '-'}</span><strong>${row.etapa}</strong></button><div class="group-order-actions"><button type="button" data-action="add-row-group" data-etapa="${escapeAttr(row.etapa)}" title="Nova linha nesta etapa">+</button><button type="button" data-action="move-group" data-catalog-type="etapas" data-group-value="${escapeAttr(row.etapa)}" data-direction="up" title="Subir etapa">^</button><button type="button" data-action="move-group" data-catalog-type="etapas" data-group-value="${escapeAttr(row.etapa)}" data-direction="down" title="Descer etapa">v</button></div></div></div></td></tr>`;
+                    return `<tr class="group-row etapa-row"><td colspan="8"><div class="group-row-content"><div class="group-title-area"><button type="button" class="group-toggle" data-action="toggle-group" data-group-type="etapa" data-group-key="${encodeURIComponent(row.etapa)}"><span class="group-icon">${isCollapsed ? '+' : '-'}</span><strong>${row.etapa}</strong></button></div><div class="group-order-actions"><button type="button" data-action="add-row-group" data-etapa="${escapeAttr(row.etapa)}" title="Nova linha nesta etapa">+</button><button type="button" data-action="move-group" data-catalog-type="etapas" data-group-value="${escapeAttr(row.etapa)}" data-direction="up" title="Subir etapa">^</button><button type="button" data-action="move-group" data-catalog-type="etapas" data-group-value="${escapeAttr(row.etapa)}" data-direction="down" title="Descer etapa">v</button></div></div></td></tr>`;
                 }
                 if (row.type === 'setor') {
                     const isCollapsed = collapsedSetores.has(row.setorKey);
-                    return `<tr class="group-row setor-row"><td colspan="8"><div class="group-row-content"><div class="group-title-area"><button type="button" class="group-toggle" data-action="toggle-group" data-group-type="setor" data-group-key="${encodeURIComponent(row.setorKey)}"><span class="group-icon">${isCollapsed ? '+' : '-'}</span><strong>${row.setor}</strong></button><div class="group-order-actions"><button type="button" data-action="add-row-group" data-etapa="${escapeAttr(row.etapa)}" data-setor="${escapeAttr(row.setor)}" title="Nova linha neste setor">+</button><button type="button" data-action="move-group" data-catalog-type="setores" data-group-value="${escapeAttr(row.setor)}" data-direction="up" title="Subir setor">^</button><button type="button" data-action="move-group" data-catalog-type="setores" data-group-value="${escapeAttr(row.setor)}" data-direction="down" title="Descer setor">v</button></div></div></div></td></tr>`;
+                    return `<tr class="group-row setor-row"><td colspan="8"><div class="group-row-content"><div class="group-title-area"><button type="button" class="group-toggle" data-action="toggle-group" data-group-type="setor" data-group-key="${encodeURIComponent(row.setorKey)}"><span class="group-icon">${isCollapsed ? '+' : '-'}</span><strong>${row.setor}</strong></button></div><div class="group-order-actions"><button type="button" data-action="add-row-group" data-etapa="${escapeAttr(row.etapa)}" data-setor="${escapeAttr(row.setor)}" title="Nova linha neste setor">+</button><button type="button" data-action="move-group" data-catalog-type="setores" data-group-value="${escapeAttr(row.setor)}" data-direction="up" title="Subir setor">^</button><button type="button" data-action="move-group" data-catalog-type="setores" data-group-value="${escapeAttr(row.setor)}" data-direction="down" title="Descer setor">v</button></div></div></td></tr>`;
                 }
                 const task = row.task;
                 normalizeTaskDates(task);
@@ -493,9 +667,9 @@
             const count = Math.min(tableRows.length, graphRows.length);
 
             for (let i = 0; i < count; i += 1) {
-                const tableHeight = Math.round(tableRows[i].getBoundingClientRect().height);
+                const tableHeight = tableRows[i].getBoundingClientRect().height;
                 if (tableHeight > 0) {
-                    graphRows[i].style.height = `${tableHeight - 1}px`;
+                    graphRows[i].style.height = `${tableHeight}px`;
                 }
             }
 
@@ -508,6 +682,22 @@
                 bar.style.top = `${Math.max(2, Math.round((rowHeight - barHeight) / 2))}px`;
             });
         };
+        const syncScrollbarsVisualSize = () => {
+            const horizontalScrollbarHeight = Math.max(0, timelineBodyScroll.offsetHeight - timelineBodyScroll.clientHeight);
+            document.documentElement.style.setProperty('--timeline-h-scroll', `${horizontalScrollbarHeight}px`);
+        };
+        const syncScrollableRange = () => {
+            sheetScroll.style.paddingBottom = '0px';
+            timelineRows.style.paddingBottom = '0px';
+            const sheetMax = Math.max(0, sheetScroll.scrollHeight - sheetScroll.clientHeight);
+            const timelineMax = Math.max(0, timelineBodyScroll.scrollHeight - timelineBodyScroll.clientHeight);
+            const delta = timelineMax - sheetMax + 1;
+            if (delta > 0) {
+                sheetScroll.style.paddingBottom = `${delta}px`;
+            } else if (delta < 0) {
+                timelineRows.style.paddingBottom = `${Math.abs(delta)}px`;
+            }
+        };
 
         const renderAll = () => {
             syncDependentDates();
@@ -515,7 +705,12 @@
             const rows = buildRows();
             renderTable(rows);
             renderTimeline(rows);
-            requestAnimationFrame(syncTimelineRowHeights);
+            requestAnimationFrame(() => {
+                syncTimelineRowHeights();
+                syncScrollbarsVisualSize();
+                calibrateVerticalAlignment();
+                syncScrollableRange();
+            });
         };
 
         const openRowEditModal = (task) => { editingRowId = Number(task.id); fillSelectOptions(rowEditEtapaSelect, catalogs.etapas, task.etapa || catalogs.etapas?.[0] || ''); fillSelectOptions(rowEditSetorSelect, catalogs.setores, task.setor || catalogs.setores?.[0] || ''); rowEditModal.classList.remove('is-hidden'); rowEditModal.setAttribute('aria-hidden', 'false'); };
@@ -523,8 +718,8 @@
         const openNewRowModal = () => { fillSelectOptions(newRowEtapaSelect, catalogs.etapas, catalogs.etapas?.[0] || 'Unica'); fillSelectOptions(newRowSetorSelect, catalogs.setores, catalogs.setores?.[0] || ''); newRowModal.classList.remove('is-hidden'); newRowModal.setAttribute('aria-hidden', 'false'); };
         const closeNewRowModal = () => { newRowModal.classList.add('is-hidden'); newRowModal.setAttribute('aria-hidden', 'true'); };
         const closeCadastroMenu = () => cadastroMenu.classList.add('is-hidden');
-        const closeCadastroModal = () => { cadastrosModal.classList.add('is-hidden'); cadastrosModal.setAttribute('aria-hidden', 'true'); };
-        const openCadastroModal = (type) => { activeCadastroType = type; renderCadastrosPanel(); cadastrosModal.classList.remove('is-hidden'); cadastrosModal.setAttribute('aria-hidden', 'false'); };
+        const closeCadastroModal = () => { cadastrosModal.classList.add('is-hidden'); cadastrosModal.setAttribute('aria-hidden', 'true'); editingCatalogValue = null; cadastroSearchTerm = ''; };
+        const openCadastroModal = (type) => { activeCadastroType = type; editingCatalogValue = null; cadastroSearchTerm = ''; renderCadastrosPanel(); cadastrosModal.classList.remove('is-hidden'); cadastrosModal.setAttribute('aria-hidden', 'false'); };
 
         const clearSourceHoverHighlight = () => { if (!hoveredSourceCell) return; hoveredSourceCell.classList.remove('source-link-cell-hover'); hoveredSourceCell = null; };
         const applySourceHoverHighlightFromRow = (row) => {
@@ -566,6 +761,8 @@
             }
             if (field === 'inicio') { normalizeTaskDates(task); renderAll(); return; }
             if (field === 'duracao' || field === 'intervalo') { renderAll(); return; }
+            if (field === 'tarefa' || field === 'subtarefa') saveCatalogs();
+            saveTasks();
         };
 
         tableBody.addEventListener('input', updateTaskFromField);
@@ -656,28 +853,122 @@
             renderAll();
         });
 
-        let syncingVertical = false;
+        let syncingVerticalSource = null;
         let syncingHorizontal = false;
-        sheetScroll.addEventListener('scroll', () => { if (syncingVertical) return; syncingVertical = true; timelineBodyScroll.scrollTop = sheetScroll.scrollTop; syncingVertical = false; });
-        timelineBodyScroll.addEventListener('scroll', () => { if (!syncingVertical) { syncingVertical = true; sheetScroll.scrollTop = timelineBodyScroll.scrollTop; syncingVertical = false; } if (syncingHorizontal) return; syncingHorizontal = true; timelineHeaderScroll.scrollLeft = timelineBodyScroll.scrollLeft; syncingHorizontal = false; });
-        timelineHeaderScroll.addEventListener('scroll', () => { if (syncingHorizontal) return; syncingHorizontal = true; timelineBodyScroll.scrollLeft = timelineHeaderScroll.scrollLeft; syncingHorizontal = false; });
-        window.addEventListener('resize', () => { requestAnimationFrame(syncTimelineRowHeights); });
+        let verticalScrollOffset = 0;
+        const getScrollableMax = (el, axis) => axis === 'y' ? Math.max(0, el.scrollHeight - el.clientHeight) : Math.max(0, el.scrollWidth - el.clientWidth);
+        const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+        const calibrateVerticalAlignment = () => {
+            const leftFirstRow = tableBody.querySelector('tr');
+            const rightFirstRow = timelineRows.querySelector('.timeline-row');
+            if (!leftFirstRow || !rightFirstRow) { verticalScrollOffset = 0; return; }
+            const leftTop = leftFirstRow.getBoundingClientRect().top;
+            const rightTop = rightFirstRow.getBoundingClientRect().top;
+            verticalScrollOffset = Math.round(rightTop - leftTop);
+        };
+        sheetScroll.addEventListener('scroll', () => {
+            if (syncingVerticalSource === 'timeline') return;
+            syncingVerticalSource = 'sheet';
+            const targetMax = getScrollableMax(timelineBodyScroll, 'y');
+            const nextTop = clamp(sheetScroll.scrollTop + verticalScrollOffset, 0, targetMax);
+            timelineBodyScroll.scrollTop = nextTop;
+            syncingVerticalSource = null;
+        });
+        timelineBodyScroll.addEventListener('scroll', () => {
+            if (syncingVerticalSource !== 'sheet') {
+                syncingVerticalSource = 'timeline';
+                const targetMax = getScrollableMax(sheetScroll, 'y');
+                const nextTop = clamp(timelineBodyScroll.scrollTop - verticalScrollOffset, 0, targetMax);
+                sheetScroll.scrollTop = nextTop;
+                syncingVerticalSource = null;
+            }
+            if (syncingHorizontal) return;
+            syncingHorizontal = true;
+            timelineHeaderScroll.scrollLeft = timelineBodyScroll.scrollLeft;
+            syncingHorizontal = false;
+        });
+        timelineHeaderScroll.addEventListener('scroll', () => {
+            if (syncingHorizontal) return;
+            syncingHorizontal = true;
+            timelineBodyScroll.scrollLeft = timelineHeaderScroll.scrollLeft;
+            syncingHorizontal = false;
+        });
+        window.addEventListener('resize', () => {
+            requestAnimationFrame(() => {
+                syncTimelineRowHeights();
+                syncScrollbarsVisualSize();
+                calibrateVerticalAlignment();
+                syncScrollableRange();
+            });
+        });
 
         openCadastrosBtn.addEventListener('click', () => cadastroMenu.classList.toggle('is-hidden'));
         cadastroMenu.addEventListener('click', (event) => { const item = event.target.closest('button[data-open-cadastro-type]'); if (!item) return; closeCadastroMenu(); openCadastroModal(item.dataset.openCadastroType); });
         document.addEventListener('click', (event) => { if (!cadastroMenu.contains(event.target) && event.target !== openCadastrosBtn) closeCadastroMenu(); });
-        scaleButtons.forEach((button) => button.addEventListener('click', () => { const scale = button.dataset.scale; if (!scale) return; activeScale = scale; scaleButtons.forEach((item) => item.classList.toggle('is-active', item === button)); renderTimeline(buildRows()); }));
+        scaleButtons.forEach((button) => button.addEventListener('click', () => {
+            const scale = button.dataset.scale;
+            if (!scale) return;
+            activeScale = scale;
+            scaleButtons.forEach((item) => item.classList.toggle('is-active', item === button));
+            const currentVerticalRatio = (() => {
+                const max = Math.max(0, timelineBodyScroll.scrollHeight - timelineBodyScroll.clientHeight);
+                return max > 0 ? timelineBodyScroll.scrollTop / max : 0;
+            })();
+            renderAll();
+            requestAnimationFrame(() => {
+                const targetMax = Math.max(0, timelineBodyScroll.scrollHeight - timelineBodyScroll.clientHeight);
+                timelineBodyScroll.scrollTop = Math.round(currentVerticalRatio * targetMax);
+                const sheetMax = Math.max(0, sheetScroll.scrollHeight - sheetScroll.clientHeight);
+                sheetScroll.scrollTop = clamp(timelineBodyScroll.scrollTop - verticalScrollOffset, 0, sheetMax);
+            });
+        }));
 
         cadastrosModal.addEventListener('click', (event) => {
             if (event.target.closest('[data-action="close-cadastros"]')) { closeCadastroModal(); return; }
+            const startEditBtn = event.target.closest('button[data-action="start-edit-catalog-item"]');
+            if (startEditBtn) {
+                editingCatalogValue = normalizeCatalogValue(startEditBtn.dataset.catalogValue);
+                renderCadastrosPanel();
+                requestAnimationFrame(() => {
+                    const input = cadastrosModal.querySelector('input[data-edit-input="catalog-item"]');
+                    if (!input) return;
+                    input.focus();
+                    input.select();
+                });
+                return;
+            }
+            if (event.target.closest('button[data-action="cancel-edit-catalog-item"]')) {
+                editingCatalogValue = null;
+                renderCadastrosPanel();
+                return;
+            }
+            const saveEditBtn = event.target.closest('button[data-action="save-edit-catalog-item"]');
+            if (saveEditBtn) {
+                const row = saveEditBtn.closest('tr');
+                const input = row?.querySelector('input[data-edit-input="catalog-item"]');
+                const type = saveEditBtn.dataset.catalogType || activeCadastroType;
+                const oldValue = normalizeCatalogValue(saveEditBtn.dataset.catalogValue);
+                const newValue = normalizeCatalogValue(input?.value);
+                if (!type || !oldValue || !newValue) return;
+                if (renameCatalogValue(type, oldValue, newValue)) {
+                    saveCatalogs();
+                    editingCatalogValue = null;
+                    renderCadastrosPanel();
+                    renderAll();
+                }
+                return;
+            }
             const removeBtn = event.target.closest('button[data-action="remove-catalog-item"]');
             if (!removeBtn) return;
             const type = removeBtn.dataset.catalogType;
             const value = normalizeCatalogValue(removeBtn.dataset.catalogValue);
             if (!type || !value || !catalogs[type]) return;
-            if ((catalogs[type] || []).length <= 1) return;
-            catalogs[type] = catalogs[type].filter((item) => item !== value);
-            tasks.forEach((task) => { if (type === 'etapas' && task.etapa === value) task.etapa = catalogs.etapas[0] || ''; if (type === 'setores' && task.setor === value) task.setor = catalogs.setores[0] || ''; if (type === 'tarefas' && task.tarefa === value) task.tarefa = catalogs.tarefas[0] || ''; if (type === 'subtarefas' && task.subtarefa === value) task.subtarefa = catalogs.subtarefas[0] || ''; });
+            if (isCatalogValueInUse(type, value)) {
+                window.alert('Esse item ja foi usado em uma tarefa e nao pode ser excluido.');
+                return;
+            }
+            if (!removeCatalogValue(type, value)) return;
+            if (editingCatalogValue && toCatalogCompareKey(editingCatalogValue) === toCatalogCompareKey(value)) editingCatalogValue = null;
             saveCatalogs();
             renderCadastrosPanel();
             renderAll();
@@ -686,10 +977,31 @@
         rowEditModal.addEventListener('click', (event) => { if (event.target.closest('[data-action="close-row-edit"]')) closeRowEditModal(); });
         rowEditForm.addEventListener('submit', (event) => { event.preventDefault(); const etapa = normalizeCatalogValue(rowEditEtapaSelect.value); const setor = normalizeCatalogValue(rowEditSetorSelect.value); if (!etapa || !setor || editingRowId === null) return; const task = tasks.find((item) => Number(item.id) === Number(editingRowId)); if (!task) return; task.etapa = etapa; task.setor = setor; ensureCatalogValue('etapas', etapa); ensureCatalogValue('setores', setor); saveCatalogs(); closeRowEditModal(); renderAll(); });
         cadastroActiveForm.addEventListener('submit', (event) => { event.preventDefault(); const value = normalizeCatalogValue(cadastroActiveInput.value); if (!activeCadastroType || !value) return; ensureCatalogValue(activeCadastroType, value); saveCatalogs(); renderCadastrosPanel(); renderAll(); cadastroActiveInput.value = ''; });
+        cadastroSearchInput.addEventListener('input', (event) => { cadastroSearchTerm = normalizeCatalogValue(event.target.value); renderCadastrosPanel(); });
+        cadastrosModal.addEventListener('keydown', (event) => {
+            const editInput = event.target.closest('input[data-edit-input="catalog-item"]');
+            if (!editInput) return;
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                const saveButton = editInput.closest('tr')?.querySelector('button[data-action="save-edit-catalog-item"]');
+                if (saveButton) saveButton.click();
+            }
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                editingCatalogValue = null;
+                renderCadastrosPanel();
+            }
+        });
 
         loadCatalogs();
         loadTasks();
+        if (ensureSeedCatalogs()) saveCatalogs();
         renderAll();
+        requestAnimationFrame(() => {
+            syncScrollbarsVisualSize();
+            calibrateVerticalAlignment();
+            syncScrollableRange();
+        });
     </script>
 </body>
 </html>
